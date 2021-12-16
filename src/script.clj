@@ -2,13 +2,16 @@
 (ns script
   (:require [babashka.process :as p]))
 
-(assert (= 1 (count *command-line-args*)) "Please give one link to a YouTube video as an argument.")
+(assert (= 1 (count *command-line-args*))
+        "Please give one link to a YouTube video as an argument.")
 
 ;; Not sure I actually need this
 (assert (= java.lang.String (type (first *command-line-args*))))
 
 (def link (first *command-line-args*))
 
+;; Adding deref/@ makes the function blocking.
+;; The next function won't run until this one completes
 @(p/process ["youtube-dl" "-F" link]
             {:inherit true
              :shutdown p/destroy-tree})
